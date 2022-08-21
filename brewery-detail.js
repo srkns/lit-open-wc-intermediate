@@ -6,6 +6,7 @@ class BreweryDetail extends LitElement {
   }
   static get properties() {
     return {
+      id: String,
       name: String,
       type: String,
       city: String,
@@ -15,6 +16,7 @@ class BreweryDetail extends LitElement {
   }
   constructor() {
     super();
+    this.id = '';
     this.name = '';
     this.type = '';
     this.city = '';

@@ -9,6 +9,7 @@ class BreweryApp extends LitElement {
     return {
       _serviceURL: {state: true},
       _breweries: {type: Array},
+      _breweriesToShow: { type: Array },
       _breweriesFetched: {type: Boolean},
     };
   }
@@ -47,14 +48,19 @@ class BreweryApp extends LitElement {
     if (!this._breweriesFetched) {
       return html` <p>Breweries Loading...</p> `;
     }
+    const total = this._breweries.length;
     const totalVisited = this._breweries.filter(brewery => brewery.visited).length;
-    const totalNotVisited = this._breweries.length - totalVisited;
+    const totalNotVisited = total - totalVisited;
     return html`
       <p>Total Visit Status : (${totalVisited} visited and ${totalNotVisited} still to go)</p> 
+      <button @click=${this.showVisited}>Show Visited(${totalVisited})</button>
+      <button @click=${this.showUnvisited}>Show Unvisited(${totalNotVisited})</button>
+      <button @click=${this.showAll}>Show All(${total})</button>
       <ul>
-      ${this._breweries.map(brewery => html`
+      ${this._breweriesToShow.map(brewery => html`
           <li>
             <brewery-detail 
+              .id=${brewery.id}
               .name=${brewery.name} 
               .type=${brewery.brewery_type} 
               .city=${brewery.city} 
@@ -69,14 +75,26 @@ class BreweryApp extends LitElement {
     const response = await fetch('https://api.openbrewerydb.org/breweries');
     const jsonResponse = await response.json();
     this._breweries = jsonResponse;
+    this._breweriesToShow = [...this._breweries];
+    //this._breweriesToShow = { ...this._breweriesToShow, visited: false };
     this._breweriesFetched = true;
     console.log('brewery-app fetchBreweries fetched Breweries');
   }
   toggleVisitedStatus(breweryToUpdate) {
     console.log('brewery-app toggleVisitedStatus');
     this._breweries = this._breweries.map(brewery => {
-      return brewery === breweryToUpdate ? { ...brewery, visited: !brewery.visited } : brewery;
+      return brewery.id === breweryToUpdate.id ? { ...brewery, visited: !brewery.visited } : brewery;
     });
+    this._breweriesToShow = [...this._breweries];
+  }
+  showVisited() {
+    this._breweriesToShow = this._breweries.filter(brewery => brewery.visited);
+  }
+  showUnvisited() {
+    this._breweriesToShow = this._breweries.filter(brewery => !brewery.visited);
+  }
+  showAll() {
+    this._breweriesToShow = [...this._breweries];
   }
 }
 customElements.define('brewery-app', BreweryApp);
