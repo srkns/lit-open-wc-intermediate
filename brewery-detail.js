@@ -1,4 +1,5 @@
 import {html, css, LitElement} from 'lit';
+import '@material/mwc-button';
 
 class BreweryDetail extends LitElement {
   static get styles() {
@@ -26,7 +27,7 @@ class BreweryDetail extends LitElement {
   render() {
     console.log('brewery-detail rendered');
     return html`
-      <h3>Name: ${this.name} - ${this.visitedStatus(this.visited)} - <button @click=${this.visit}>${this.visitButtonText()} This!</button></h3>
+      <h3>Name: ${this.name} - ${this.visitedStatus(this.visited)} - <mwc-button @click=${this.visit}>${this.visitButtonText()} This!</mwc-button></h3>
       <p>Type: ${this.type}</p>
       <p>City: ${this.city}</p>
     `;

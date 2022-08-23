@@ -1,4 +1,5 @@
 import {html, css, LitElement} from 'lit';
+import '@material/mwc-button';
 import './brewery-detail.js';
 
 class BreweryApp extends LitElement {
@@ -54,9 +55,9 @@ class BreweryApp extends LitElement {
     const breweries = (this._filter === 'none') ? [...this._breweries] : this._breweries.filter(brewery => { return this._filter === 'visited' ? brewery.visited : !brewery.visited });
     return html`
       <p>Total Visit Status : (${totalVisited} visited and ${totalNotVisited} still to go)</p> 
-      <button @click=${this.showVisited}>Show Visited(${totalVisited})</button>
-      <button @click=${this.showUnvisited}>Show Unvisited(${totalNotVisited})</button>
-      <button @click=${this.showAll}>Show All(${total})</button>
+      <mwc-button @click=${this.showVisited}>Show Visited(${totalVisited})</mwc-button>
+      <mwc-button @click=${this.showUnvisited}>Show Unvisited(${totalNotVisited})</mwc-button>
+      <mwc-button @click=${this.showAll}>Show All(${total})</mwc-button>
       <ul>
       ${breweries.map(brewery => html`
           <li>
