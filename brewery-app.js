@@ -1,6 +1,6 @@
 import {html, css, LitElement} from 'lit';
 import '@material/mwc-button';
-import './brewery-detail.js';
+//import './brewery-detail.js';
 
 class BreweryApp extends LitElement {
   static get styles() {
@@ -59,19 +59,9 @@ class BreweryApp extends LitElement {
       <mwc-button @click=${this.showUnvisited}>Show Unvisited(${totalNotVisited})</mwc-button>
       <mwc-button @click=${this.showAll}>Show All(${total})</mwc-button>
       <ul>
-      ${breweries.map(brewery => html`
-          <li>
-            <brewery-detail 
-              .id=${brewery.id}
-              .name=${brewery.name} 
-              .type=${brewery.brewery_type} 
-              .city=${brewery.city} 
-              .url=${brewery.website_url}
-              .visited=${brewery.visited}
-              @toggle-visited-status=${() => this.toggleVisitedStatus(brewery)}
-            ></brewery-detail>
-          </li>`,)}
-      </ul> `;
+        ${breweries.map(brewery => this.breweryDetail(brewery, () => this.toggleVisitedStatus(brewery)))}
+      </ul>
+      `;
   }
   async fetchBreweries() {
     console.log('brewery-app fetchBreweries fetching Breweries');
@@ -98,6 +88,16 @@ class BreweryApp extends LitElement {
   }
   showAll() {
     this._filter = 'none';
+  }
+  breweryDetail(brewery, visitAction) {
+    return html`
+      <h3>Name: ${brewery.name} 
+        - ${brewery.visited ? 'Visited' : 'Unvisited'} 
+        - <mwc-button @click=${visitAction}>${brewery.visited ? 'Un-Visit' : 'Visit'} This!</mwc-button>
+      </h3>
+      <p>Type: ${brewery.brewery_type}</p>
+      <p>City: ${brewery.city}</p>
+    `;
   }
 }
 customElements.define('brewery-app', BreweryApp);
