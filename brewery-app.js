@@ -9,8 +9,7 @@ class BreweryApp extends LitElement {
     return {
       _serviceURL: {state: true},
       _breweries: {type: Array},
-      _breweriesToShow: { type: Array },
-      _breweriesFetched: {type: Boolean},
+      _filter: { type: String }
     };
   }
   connectedCallback() {
@@ -42,6 +41,7 @@ class BreweryApp extends LitElement {
     super();
     this._serviceURL = "https://api.openbrewerydb.org/breweries";
     this._breweriesFetched = false;
+    this._filter = 'none';
   }
   render() {
     console.log('brewery-app rendered');
@@ -51,13 +51,14 @@ class BreweryApp extends LitElement {
     const total = this._breweries.length;
     const totalVisited = this._breweries.filter(brewery => brewery.visited).length;
     const totalNotVisited = total - totalVisited;
+    const breweries = (this._filter === 'none') ? [...this._breweries] : this._breweries.filter(brewery => { return this._filter === 'visited' ? brewery.visited : !brewery.visited });
     return html`
       <p>Total Visit Status : (${totalVisited} visited and ${totalNotVisited} still to go)</p> 
       <button @click=${this.showVisited}>Show Visited(${totalVisited})</button>
       <button @click=${this.showUnvisited}>Show Unvisited(${totalNotVisited})</button>
       <button @click=${this.showAll}>Show All(${total})</button>
       <ul>
-      ${this._breweriesToShow.map(brewery => html`
+      ${breweries.map(brewery => html`
           <li>
             <brewery-detail 
               .id=${brewery.id}
@@ -75,8 +76,6 @@ class BreweryApp extends LitElement {
     const response = await fetch('https://api.openbrewerydb.org/breweries');
     const jsonResponse = await response.json();
     this._breweries = jsonResponse;
-    this._breweriesToShow = [...this._breweries];
-    //this._breweriesToShow = { ...this._breweriesToShow, visited: false };
     this._breweriesFetched = true;
     console.log('brewery-app fetchBreweries fetched Breweries');
   }
@@ -85,16 +84,15 @@ class BreweryApp extends LitElement {
     this._breweries = this._breweries.map(brewery => {
       return brewery.id === breweryToUpdate.id ? { ...brewery, visited: !brewery.visited } : brewery;
     });
-    this._breweriesToShow = [...this._breweries];
   }
   showVisited() {
-    this._breweriesToShow = this._breweries.filter(brewery => brewery.visited);
+    this._filter = 'visited';
   }
   showUnvisited() {
-    this._breweriesToShow = this._breweries.filter(brewery => !brewery.visited);
+    this._filter = 'unvisited';
   }
   showAll() {
-    this._breweriesToShow = [...this._breweries];
+    this._filter = 'none';
   }
 }
 customElements.define('brewery-app', BreweryApp);
