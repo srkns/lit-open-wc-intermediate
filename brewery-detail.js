@@ -39,7 +39,6 @@ class BreweryDetail extends LitElement {
   }
   visit() {
     console.log('brewery-detail visit');
-    this.visited = !this.visited;
     this.dispatchEvent(new CustomEvent('toggle-visited-status'));
   }
   visitButtonText() {

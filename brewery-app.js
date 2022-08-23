@@ -9,7 +9,7 @@ class BreweryApp extends LitElement {
     return {
       _serviceURL: {state: true},
       _breweries: {type: Array},
-      _filter: { type: String }
+      _filter: {type: String}
     };
   }
   connectedCallback() {
@@ -66,6 +66,7 @@ class BreweryApp extends LitElement {
               .type=${brewery.brewery_type} 
               .city=${brewery.city} 
               .url=${brewery.website_url}
+              .visited=${brewery.visited}
               @toggle-visited-status=${() => this.toggleVisitedStatus(brewery)}
             ></brewery-detail>
           </li>`,)}
@@ -76,6 +77,9 @@ class BreweryApp extends LitElement {
     const response = await fetch('https://api.openbrewerydb.org/breweries');
     const jsonResponse = await response.json();
     this._breweries = jsonResponse;
+    this._breweries.forEach(element => {
+      element.visited = false;
+    });
     this._breweriesFetched = true;
     console.log('brewery-app fetchBreweries fetched Breweries');
   }
